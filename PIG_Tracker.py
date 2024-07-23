@@ -19,6 +19,12 @@ def test_func2(self):
     pass
 
 
+##### I MADE MORE
+
+def test_func3(self):
+    pass
+
+
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
