@@ -9,7 +9,11 @@ from numpy import random
 
 from ALL_CODE import *
 
-# MESSAGE MASSAGE MESSAGE
+
+##### I MADE SOME CHANGES
+
+def test_func(self):
+    print("MESSAGE TEST")
 
 
 class UI(QMainWindow):
