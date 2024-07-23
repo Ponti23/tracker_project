@@ -9,8 +9,7 @@ from numpy import random
 
 from ALL_CODE import *
 
-
-######### OFFICIAL CODE TESTING GIT
+# MESSAGE MASSAGE MESSAGE
 
 
 class UI(QMainWindow):
@@ -131,6 +130,7 @@ class UI(QMainWindow):
             message2 = f"LENGTH OF DATA: {RD}"
             self.text_right.setText(message)
             self.text_left.setText(message2)
+
 
 
 
