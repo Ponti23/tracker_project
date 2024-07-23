@@ -10,19 +10,6 @@ from numpy import random
 from ALL_CODE import *
 
 
-##### I MADE SOME CHANGES
-
-def test_func(self):
-    print("MESSAGE TEST")
-
-def test_func2(self):
-    pass
-
-
-##### I MADE MORE
-
-def test_func3(self):
-    pass
 
 
 class UI(QMainWindow):
@@ -73,6 +60,9 @@ class UI(QMainWindow):
     # FUNCTION TO PLOT ON SPIKE CANVAS
     def plotData(self):
         # CLEAR CANVAS
+
+        self.spike_data = random.randint(50, size=(100))
+
         self.spike_figure.clear()
         ax = self.spike_figure.add_subplot(111)  # <--- CHANGED LINE
 
@@ -91,6 +81,9 @@ class UI(QMainWindow):
     # FUNCTION TO PLOT ON GRAPH CANVAS
     def plotData2(self):
         # CLEAR CANVAS
+
+        self.graph_data = random.randint(100, size=(100))
+
         self.graph_figure.clear()
         ax = self.graph_figure.add_subplot(111)  # <--- CHANGED LINE
 
