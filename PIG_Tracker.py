@@ -15,6 +15,9 @@ from ALL_CODE import *
 def test_func(self):
     print("MESSAGE TEST")
 
+def test_func2(self):
+    pass
+
 
 class UI(QMainWindow):
     def __init__(self):
