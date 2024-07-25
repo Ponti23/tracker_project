@@ -57,22 +57,22 @@ def read_csv(file_path):
         tube_voltage = rows[2][1]
         calibration_factor = rows[3][1]
         
-        # Extract real_data and convert from hex to decimal
-        real_data = []
+        # Extract raw_data and convert from hex to decimal
+        raw_data = []
         for row in rows[4:]:
-            real_data.append(hex_to_decimal(row[1]))
+            raw_data.append(hex_to_decimal(row[1]))
         
     return {
-        "real_data": real_data,
+        "raw_data": raw_data,
         "file_name": file_path.split('/')[-1],
         "time_start": time_started,
         "tube_voltage": tube_voltage,
         "calibration_factor": calibration_factor
     }
 
-def get_spike(real_data):
+def get_spike(raw_data):
     BGCounts = 256
-    background = GetBG(real_data[0:BGCounts])
+    background = GetBG(raw_data[0:BGCounts])
     threshold = GetThresh(background)
     
     peak_indices = []
@@ -81,11 +81,11 @@ def get_spike(real_data):
     threshold_graph = []
     
     in_pulse = False
-    for i, value in enumerate(real_data[BGCounts:], start=BGCounts):
-        s0 = sum(real_data[i-4:i])
-        s1 = sum(real_data[i-8:i-4])
-        s2 = sum(real_data[i-12:i-8])
-        s3 = sum(real_data[i-16:i-12])
+    for i, value in enumerate(raw_data[BGCounts:], start=BGCounts):
+        s0 = sum(raw_data[i-4:i])
+        s1 = sum(raw_data[i-8:i-4])
+        s2 = sum(raw_data[i-12:i-8])
+        s3 = sum(raw_data[i-16:i-12])
         
         aveSamp = (s3 + 3 * (s2 + s1) + s0) >> 3
         
@@ -99,7 +99,7 @@ def get_spike(real_data):
         elif aveSamp <= threshold and in_pulse:
             in_pulse = False
             
-        temp = GetBG(real_data[i-BGCounts:i])
+        temp = GetBG(raw_data[i-BGCounts:i])
         background = temp
         threshold = GetThresh(background)
             

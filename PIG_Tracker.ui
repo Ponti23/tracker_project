@@ -44,7 +44,7 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QFrame" name="data_graph_frm">
+    <widget class="QFrame" name="data_raw_frm">
      <property name="geometry">
       <rect>
        <x>-10</x>
@@ -63,9 +63,9 @@
     <widget class="QFrame" name="data_spike_frm">
      <property name="geometry">
       <rect>
-       <x>-10</x>
+       <x>0</x>
        <y>-10</y>
-       <width>721</width>
+       <width>711</width>
        <height>521</height>
       </rect>
      </property>
@@ -173,7 +173,7 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="test_button">
+       <widget class="QPushButton" name="raw_btn">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -185,12 +185,12 @@ p, li { white-space: pre-wrap; }
          </font>
         </property>
         <property name="text">
-         <string>TEST GRAPH</string>
+         <string>PLOT RAW</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="test_button2">
+       <widget class="QPushButton" name="spike_btn">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -202,12 +202,12 @@ p, li { white-space: pre-wrap; }
          </font>
         </property>
         <property name="text">
-         <string>TEST GRAPH 2</string>
+         <string>PLOT SPIKE</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="xbtn_3">
+       <widget class="QPushButton" name="xtra_btn">
         <property name="enabled">
          <bool>false</bool>
         </property>
