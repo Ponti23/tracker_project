@@ -64,8 +64,11 @@ class UI(QMainWindow):
         self.show()
 
 
+
+
+        # IMPORTANT DATA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         self.spike_data = random.randint(50, size=(100))
-        self.raw_data = random.randint(100, size=(100))  # <--- NEW LINE
+        self.raw_data = random.randint(100, size=(100))
 
 
 
@@ -93,8 +96,7 @@ class UI(QMainWindow):
         self.raw_canvas.draw()
 
 
-
-    # GRAPHING THE SPIKE
+    """# GRAPHING THE SPIKE
     def plot_spike(self):
         self.text_left.setText("YOU PRESSED SPIKE TEST BUTTON!")
         # CLEAR CANVAS
@@ -108,14 +110,15 @@ class UI(QMainWindow):
         
         # CREATE PLOT
         ax.plot(x, y, label='spike_data')
-        """ax.set_xlabel('X Axis')
+        ax.set_xlabel('X Axis')
         ax.set_ylabel('Y Axis')
-        ax.set_title('PLOT OF SPIKE DATA')"""
+        ax.set_title('PLOT OF SPIKE DATA')
         ax.legend()
 
-        self.spike_canvas.draw()
-        
-        
+        self.spike_canvas.draw()"""
+
+
+
 
     # FUNCTION TO GET CSV
     def get_csv(self):
