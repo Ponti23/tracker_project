@@ -43,7 +43,7 @@ class UI(QMainWindow):
         self.open_file_button = self.findChild(QPushButton, "open_file_button")
         self.open_file_button.clicked.connect(self.open_csv)
         self.export_file_button = self.findChild(QPushButton, "export_file_button")
-        #self.export_file_button.clicked.connect(self.export_csv)
+        self.export_file_button.clicked.connect(self.export_csv)
 
         self.peak_next_button = self.findChild(QPushButton, "peak_next_button")
         self.peak_next_button.clicked.connect(self.next_spike)
@@ -72,9 +72,31 @@ class UI(QMainWindow):
         # SHOW ALL
         self.show()
 
-        # IMPORTANT DATA
-        self.peak_data = random.randint(50, size=(100))
-        self.raw_data = random.randint(100, size=(100))
+        # DATA
+        self.peak_data = None
+        self.raw_data = None
+        self.background_data = None
+        self.threshold_data = None
+
+        self.raw_data_information = None
+
+
+"""
+        "file_name_text" :      file_name
+        "date_start_text":      date_start
+        "time_start_text":      time_start
+        "date_end_text":        date_end
+        "time_end_text":        time_end
+        "calibration_text"      calibration
+        "tube_voltage_text":    tube_voltage
+        "date_threshold_text":
+        "background_text"
+        "peak_amount_text"
+        "peak_date_text"
+        "peak_time_text"
+        "peak_value_text"
+
+"""
 
         # TRACK CURRENT SPIKE INDEX
         self.current_peak_data_index = 0
@@ -92,8 +114,7 @@ class UI(QMainWindow):
         ax.legend()
 
         self.raw_canvas.draw()
-
-    # GRAPHING THE SPIKE
+    # GRAPHING THE PEAK
     def plot_peak_data(self):
         if not self.peak_data_indices:
             self.text_left.setText("No spike indices available!")
@@ -114,6 +135,8 @@ class UI(QMainWindow):
         ax.legend()
 
         self.peak_data_canvas.draw()
+
+
 
     # FUNCTION TO GET CSV
     def open_csv(self):
@@ -153,7 +176,9 @@ class UI(QMainWindow):
                 self.plot_peak_data()
                 self.plot_raw_data()
 
-
+    # FUNCTION TO EXPORT CSV
+    def export_csv(self):
+        pass
 
 
 
