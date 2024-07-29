@@ -70,7 +70,7 @@ def read_csv(file_path):
         "calibration_factor": calibration_factor
     }
 
-def get_spike(raw_data):
+def get_peak(raw_data):
     BGCounts = 256
     background = GetBG(raw_data[0:BGCounts])
     threshold = GetThresh(background)
@@ -113,3 +113,31 @@ def get_spike(raw_data):
         "threshold_graph": threshold_graph
     }
 
+def get_text(raw_data):
+    # Extract file name, start date, and start time
+    file_name = raw_data['file_name']
+    date_start = datetime.strptime(raw_data['time_start'], "%H:%M:%S %m-%d-%y").strftime("%m-%d-%y")
+    time_start = datetime.strptime(raw_data['time_start'], "%H:%M:%S %m-%d-%y").strftime("%H:%M:%S")
+
+    # Extract calibration factor and tube voltage
+    calibration_factor = raw_data['calibration_factor']
+    tube_voltage = raw_data['tube_voltage']
+
+    # Calculate end date and end time using get_time function
+    len_data = len(raw_data['raw_data'])
+    indices = [len_data - 1]
+    time_info = get_time(raw_data['time_start'], indices)
+
+    date_end = time_info['current_time'].strftime("%m-%d-%y")
+    time_end = time_info['current_time'].strftime("%H:%M:%S")
+
+    # Return as a dictionary
+    return {
+        "file_name": file_name,
+        "date_start": date_start,
+        "time_start": time_start,
+        "date_end": date_end,
+        "time_end": time_end,
+        "calibration_factor": calibration_factor,
+        "tube_voltage": tube_voltage
+    }

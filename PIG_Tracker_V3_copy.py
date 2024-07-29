@@ -72,49 +72,35 @@ class UI(QMainWindow):
         # SHOW ALL
         self.show()
 
-
-        # RAW DATA
+        # DATA
+        self.peak_data = None
         self.raw_data = None
         self.background_data = None
         self.threshold_data = None
 
-        # PEAK DATA
-        self.current_peak_data_index = 0
-        self.peak_data_indices = []
-
-        # TEST DATA
         self.raw_data_information = None
 
 
-    # FUNCTION TO GET CSV
-    def open_csv(self):
-        file_path, _ = QFileDialog.getOpenFileName(None, "Open File", "", "CSV Files (*.csv);;All Files (*)")
+        """
+        "file_name_text" :      file_name
+        "date_start_text":      date_start
+        "time_start_text":      time_start
+        "date_end_text":        date_end
+        "time_end_text":        time_end
+        "calibration_text"      calibration
+        "tube_voltage_text":    tube_voltage
+        "date_threshold_text":
+        "background_text"
+        "peak_amount_text"
+        "peak_date_text"
+        "peak_time_text"
+        "peak_value_text"
 
-        if file_path:
-            # READ THE CSV
-            raw_data = read_csv(file_path)
-            self.raw_data_information = get_text(raw_data)
-            print(self.raw_data_information)
-            # GET THE PEAKS
-            processed_data = get_peak(raw_data["raw_data"])
-            # ASSIGN INDEXES
-            self.peak_data_indices = processed_data["peak_indices"]
-            if self.peak_data_indices:
-                self.plot_peak_data()
-                self.plot_raw_data()
+        """
 
-            # ASSIGN GRAPHS
-            self.background_data = processed_data["background_graph"]
-            self.threshold_data = processed_data["threshold_graph"]
-
-    # FUNCTION TO EXPORT CSV
-    def export_csv(self):
-        pass
-
-
-#############################################
-##              GRAPH DATA                 ##
-#############################################
+        # TRACK CURRENT SPIKE INDEX
+        self.current_peak_data_index = 0
+        self.peak_data_indices = []
 
     # GRAPHING THE RAW DATA
     def plot_raw_data(self):
@@ -128,7 +114,7 @@ class UI(QMainWindow):
         ax.legend()
 
         self.raw_data_canvas.draw()
-
+        
     # GRAPHING THE PEAK
     def plot_peak_data(self):
         if not self.peak_data_indices:
@@ -150,6 +136,54 @@ class UI(QMainWindow):
         ax.legend()
 
         self.peak_data_canvas.draw()
+
+
+
+    # FUNCTION TO GET CSV
+    def open_csv(self):
+        file_path, _ = QFileDialog.getOpenFileName(None, "Open File", "", "CSV Files (*.csv);;All Files (*)")
+
+        if file_path:
+            file_name = QtCore.QFileInfo(file_path).fileName()
+            raw_data = read_csv(file_path)
+            processed_data = get_peak(raw_data["raw_data"])
+            self.raw_data_information = get_text(raw_data)
+            print(self.raw_data_information)
+            self.peak_data_indices = processed_data["peak_indices"]
+
+            FN = str(raw_data['file_name'])
+            TS = str(raw_data['time_start'])
+            TV = str(raw_data['tube_voltage'])
+            CF = str(raw_data['calibration_factor'])
+
+            rdata = raw_data["raw_data"]
+            len_data = len(rdata)
+            ldata = []
+            ldata.append(len_data)
+
+            RD = str(len(rdata))
+            self.peak_data = rdata
+            self.raw_data = rdata
+
+            time = get_time(TS, ldata)
+
+            tdays = time["elapsed_days"]
+            ctime = time["current_time"]
+
+            message = f"Filename: {FN} \nTime Start: {TS} \nTube Voltage: {TV} \nCalibration Factor: {CF} \n\nElapsed Days: {tdays} \nTime End: {ctime}"
+            message2 = f"LENGTH OF DATA: {RD}"
+            #self.text_right.setText(message)
+            #self.text_left.setText(message2)
+
+            if self.peak_data_indices:
+                self.plot_peak_data()
+                self.plot_raw_data()
+
+    # FUNCTION TO EXPORT CSV
+    def export_csv(self):
+        pass
+
+
 
     # SHOW NEXT SPIKE
     def next_spike(self):

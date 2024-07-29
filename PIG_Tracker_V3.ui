@@ -201,7 +201,7 @@ border-radius: 4px;</string>
       <rect>
        <x>20</x>
        <y>10</y>
-       <width>161</width>
+       <width>181</width>
        <height>31</height>
       </rect>
      </property>
@@ -227,7 +227,7 @@ border-radius: 4px;</string>
     <widget class="QLabel" name="time_start_text">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>260</x>
        <y>10</y>
        <width>91</width>
        <height>31</height>
@@ -255,7 +255,7 @@ border-radius: 4px;</string>
     <widget class="QLabel" name="time_start_label">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>260</x>
        <y>40</y>
        <width>111</width>
        <height>20</height>
@@ -264,7 +264,7 @@ border-radius: 4px;</string>
      <property name="font">
       <font>
        <family>Cascadia Code SemiBold</family>
-       <pointsize>7</pointsize>
+       <pointsize>11</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -305,7 +305,7 @@ border-radius: 4px;</string>
       <rect>
        <x>20</x>
        <y>90</y>
-       <width>161</width>
+       <width>181</width>
        <height>31</height>
       </rect>
      </property>
@@ -331,7 +331,7 @@ border-radius: 4px;</string>
     <widget class="QLabel" name="time_end_text">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>260</x>
        <y>90</y>
        <width>91</width>
        <height>31</height>
@@ -359,7 +359,7 @@ border-radius: 4px;</string>
     <widget class="QLabel" name="time_end_label">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>260</x>
        <y>120</y>
        <width>111</width>
        <height>20</height>
@@ -413,7 +413,7 @@ border-radius: 4px;</string>
       <rect>
        <x>20</x>
        <y>200</y>
-       <width>181</width>
+       <width>201</width>
        <height>20</height>
       </rect>
      </property>
@@ -435,7 +435,7 @@ border-radius: 4px;</string>
     <widget class="QLabel" name="tube_voltage_text">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>260</x>
        <y>170</y>
        <width>91</width>
        <height>31</height>
@@ -463,7 +463,7 @@ border-radius: 4px;</string>
     <widget class="QLabel" name="tube_voltage_label">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>260</x>
        <y>200</y>
        <width>211</width>
        <height>20</height>
@@ -618,7 +618,7 @@ border-radius: 4px;</string>
       <rect>
        <x>20</x>
        <y>10</y>
-       <width>161</width>
+       <width>171</width>
        <height>31</height>
       </rect>
      </property>
@@ -751,7 +751,7 @@ border-radius: 4px;</string>
      <rect>
       <x>10</x>
       <y>670</y>
-      <width>201</width>
+      <width>241</width>
       <height>71</height>
      </rect>
     </property>
@@ -798,7 +798,7 @@ border-radius: 4px;</string>
       <rect>
        <x>20</x>
        <y>40</y>
-       <width>161</width>
+       <width>191</width>
        <height>20</height>
       </rect>
      </property>
