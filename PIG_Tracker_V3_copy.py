@@ -78,7 +78,7 @@ class UI(QMainWindow):
         self.background_data = None
         self.threshold_data = None
 
-        self.raw_data_information = None
+        self.data_information = None
 
 
         """
@@ -102,41 +102,16 @@ class UI(QMainWindow):
         self.current_peak_data_index = 0
         self.peak_data_indices = []
 
-    # GRAPHING THE RAW DATA
-    def plot_raw_data(self):
-        self.raw_data_figure.clear()
-        ax = self.raw_data_figure.add_subplot(111)
+    
 
-        x = range(len(self.raw_data))
-        y = self.raw_data
-
-        ax.plot(x, y, label='raw_data')
-        ax.legend()
-
-        self.raw_data_canvas.draw()
-        
-    # GRAPHING THE PEAK
-    def plot_peak_data(self):
-        if not self.peak_data_indices:
-            self.text_left.setText("No spike indices available!")
-            return
-
-        self.peak_data_figure.clear()
-        ax = self.peak_data_figure.add_subplot(111)
-
-        index = self.peak_data_indices[self.current_peak_data_index]
-        start = max(0, index - 15)
-        end = min(len(self.raw_data), index + 15)
-        
-        x = range(start, end)
-        y = self.raw_data[start:end]
-
-        ax.plot(x, y, label='peak_data')
-        ax.axvline(x=index, color='r', linestyle='--', label='Spike Index')
-        ax.legend()
-
-        self.peak_data_canvas.draw()
-
+    def change_text(self):
+        self.file_name_text.setText(self.data_information["file_name"])
+        self.date_start_text.setText(self.data_information["date_start"])
+        self.time_start_text.setText(self.data_information["time_start"])
+        self.date_end_text.setText(self.data_information["date_end"])
+        self.time_end_text.setText(self.data_information["time_end"])
+        self.calibration_text.setText(self.data_information["calibration_factor"])
+        self.tube_voltage_text.setText(self.data_information["tube_voltage"])
 
 
     # FUNCTION TO GET CSV
@@ -147,8 +122,11 @@ class UI(QMainWindow):
             file_name = QtCore.QFileInfo(file_path).fileName()
             raw_data = read_csv(file_path)
             processed_data = get_peak(raw_data["raw_data"])
-            self.raw_data_information = get_text(raw_data)
-            print(self.raw_data_information)
+            self.data_information = get_text(raw_data)
+            #print(self.data_information)
+
+            self.change_text()
+
             self.peak_data_indices = processed_data["peak_indices"]
 
             FN = str(raw_data['file_name'])
@@ -181,9 +159,29 @@ class UI(QMainWindow):
 
     # FUNCTION TO EXPORT CSV
     def export_csv(self):
-        pass
+        pass   
 
+    # GRAPHING THE PEAK
+    def plot_peak_data(self):
+        if not self.peak_data_indices:
+            self.text_left.setText("No spike indices available!")
+            return
 
+        self.peak_data_figure.clear()
+        ax = self.peak_data_figure.add_subplot(111)
+
+        index = self.peak_data_indices[self.current_peak_data_index]
+        start = max(0, index - 15)
+        end = min(len(self.raw_data), index + 15)
+        
+        x = range(start, end)
+        y = self.raw_data[start:end]
+
+        ax.plot(x, y, label='peak_data')
+        ax.axvline(x=index, color='r', linestyle='--', label='Spike Index')
+        ax.legend()
+
+        self.peak_data_canvas.draw()
 
     # SHOW NEXT SPIKE
     def next_spike(self):
@@ -197,6 +195,18 @@ class UI(QMainWindow):
             self.current_peak_data_index = (self.current_peak_data_index - 1) % len(self.peak_data_indices)
             self.plot_peak_data()
 
+    # GRAPHING THE RAW DATA
+    def plot_raw_data(self):
+        self.raw_data_figure.clear()
+        ax = self.raw_data_figure.add_subplot(111)
+
+        x = range(len(self.raw_data))
+        y = self.raw_data
+
+        ax.plot(x, y, label='raw_data')
+        ax.legend()
+
+        self.raw_data_canvas.draw()
 
 app = QApplication(sys.argv)
 UIWindow = UI()

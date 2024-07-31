@@ -119,7 +119,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>LOG008.CSV</string>
+      <string>000000000000</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -215,7 +215,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>January 1, 2024</string>
+      <string>000000000000</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -319,7 +319,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>January 5, 2024</string>
+      <string>000000000000</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -437,7 +437,7 @@ border-radius: 4px;</string>
       <rect>
        <x>260</x>
        <y>170</y>
-       <width>91</width>
+       <width>161</width>
        <height>31</height>
       </rect>
      </property>
@@ -451,7 +451,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>780 V</string>
+      <string>000000000000</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -523,7 +523,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>3</string>
+      <string>000000000000</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -632,7 +632,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>January 1, 2024</string>
+      <string>000000000000</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -698,7 +698,7 @@ border-radius: 4px;</string>
       <rect>
        <x>20</x>
        <y>70</y>
-       <width>101</width>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -712,7 +712,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>00000000</string>
+      <string>000000000000</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -770,7 +770,7 @@ border-radius: 4px;</string>
       <rect>
        <x>20</x>
        <y>10</y>
-       <width>101</width>
+       <width>151</width>
        <height>31</height>
       </rect>
      </property>
@@ -784,7 +784,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>00000000</string>
+      <string>000000000000</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
