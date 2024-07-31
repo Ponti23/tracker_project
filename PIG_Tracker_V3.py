@@ -72,18 +72,43 @@ class UI(QMainWindow):
         # SHOW ALL
         self.show()
 
-
-        # RAW DATA
+        # GRAPHING DATA
+        self.peak_data = None
         self.raw_data = None
         self.background_data = None
         self.threshold_data = None
 
-        # PEAK DATA
+        # FOR TEXT LABEL
+        self.data_information = None
+        # TRACK CURRENT PEAK INDEX
         self.current_peak_data_index = 0
         self.peak_data_indices = []
 
-        # TEST DATA
-        self.raw_data_information = None
+        """
+        "file_name_text" :      file_name
+        "date_start_text":      date_start
+        "time_start_text":      time_start
+        "date_end_text":        date_end
+        "time_end_text":        time_end
+        "calibration_text"      calibration
+        "tube_voltage_text":    tube_voltage
+        "date_threshold_text":
+        "background_text"
+        "peak_amount_text"
+        "peak_date_text"
+        "peak_time_text"
+        "peak_value_text"
+
+        """
+
+    def change_text(self):
+        self.file_name_text.setText(self.data_information["file_name"])
+        self.date_start_text.setText(self.data_information["date_start"])
+        self.time_start_text.setText(self.data_information["time_start"])
+        self.date_end_text.setText(self.data_information["date_end"])
+        self.time_end_text.setText(self.data_information["time_end"])
+        self.calibration_text.setText(self.data_information["calibration_factor"])
+        self.tube_voltage_text.setText(self.data_information["tube_voltage"])
 
 
     # FUNCTION TO GET CSV
@@ -91,43 +116,21 @@ class UI(QMainWindow):
         file_path, _ = QFileDialog.getOpenFileName(None, "Open File", "", "CSV Files (*.csv);;All Files (*)")
 
         if file_path:
-            # READ THE CSV
+            file_name = QtCore.QFileInfo(file_path).fileName()
             raw_data = read_csv(file_path)
-            self.raw_data_information = get_text(raw_data)
-            print(self.raw_data_information)
-            # GET THE PEAKS
             processed_data = get_peak(raw_data["raw_data"])
-            # ASSIGN INDEXES
+            self.data_information = get_text(raw_data)
+            self.change_text()
+
             self.peak_data_indices = processed_data["peak_indices"]
+
             if self.peak_data_indices:
                 self.plot_peak_data()
                 self.plot_raw_data()
 
-            # ASSIGN GRAPHS
-            self.background_data = processed_data["background_graph"]
-            self.threshold_data = processed_data["threshold_graph"]
-
     # FUNCTION TO EXPORT CSV
     def export_csv(self):
-        pass
-
-
-#############################################
-##              GRAPH DATA                 ##
-#############################################
-
-    # GRAPHING THE RAW DATA
-    def plot_raw_data(self):
-        self.raw_data_figure.clear()
-        ax = self.raw_data_figure.add_subplot(111)
-
-        x = range(len(self.raw_data))
-        y = self.raw_data
-
-        ax.plot(x, y, label='raw_data')
-        ax.legend()
-
-        self.raw_data_canvas.draw()
+        pass   
 
     # GRAPHING THE PEAK
     def plot_peak_data(self):
@@ -163,6 +166,16 @@ class UI(QMainWindow):
             self.current_peak_data_index = (self.current_peak_data_index - 1) % len(self.peak_data_indices)
             self.plot_peak_data()
 
+    # GRAPHING THE RAW DATA
+    def plot_raw_data(self):
+        self.raw_data_figure.clear()
+        ax = self.raw_data_figure.add_subplot(111)
+        x = range(len(self.raw_data))
+        y = self.raw_data
+        ax.plot(x, y, label='raw_data')
+        ax.legend()
+
+        self.raw_data_canvas.draw()
 
 app = QApplication(sys.argv)
 UIWindow = UI()
