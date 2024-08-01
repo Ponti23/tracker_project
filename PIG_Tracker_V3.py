@@ -1,16 +1,12 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QFileDialog, QPushButton, QFrame, QHBoxLayout
 from PyQt5 import uic, QtCore
 import sys
-
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from numpy import random
-
 from ALL_CODE import *
-
-#NEEEEEEEEEEEEED TO FIIIIIIIIIIIIIIIIIIIIX
-from exporting import export_file
+from exporting import export_pdf  # Import the export_pdf function
 
 class UI(QMainWindow):
     def __init__(self):
@@ -19,48 +15,35 @@ class UI(QMainWindow):
         uic.loadUi("PIG_Tracker_V3.ui", self)
 
         # DEFINE WIDGETS
-
         # INFORMATION TEXT
         self.file_name_text = self.findChild(QLabel, "file_name_text")
-        
         self.date_start_text = self.findChild(QLabel, "date_start_text")
         self.time_start_text = self.findChild(QLabel, "time_start_text")
-
         self.date_end_text = self.findChild(QLabel, "date_end_text")
         self.time_end_text = self.findChild(QLabel, "time_end_text")
-        
         self.calibration_text = self.findChild(QLabel, "calibration_text")
         self.tube_voltage_text = self.findChild(QLabel, "tube_voltage_text")
-
-        self.threshold_text = self.findChild(QLabel, "date_threshold_text")
+        self.threshold_text = self.findChild(QLabel, "threshold_text")
         self.background_text = self.findChild(QLabel, "background_text")
-
         self.peak_amount_text = self.findChild(QLabel, "peak_amount_text")
         self.peak_date_text = self.findChild(QLabel, "peak_date_text")
         self.peak_time_text = self.findChild(QLabel, "peak_time_text")
         self.peak_value_text = self.findChild(QLabel, "peak_value_text")
 
-
         # BUTTONS
         self.open_file_button = self.findChild(QPushButton, "open_file_button")
         self.open_file_button.clicked.connect(self.open_csv)
         self.export_file_button = self.findChild(QPushButton, "export_file_button")
-
-        ###### NEEEEEEEEEEED TO FIIIIIIIIIIIIIIIIIIIIIIIX
-        self.export_file_button.clicked.connect(lambda: export_file(self))
-
+        self.export_file_button.clicked.connect(self.export_pdf)  # Updated to call the new function
         self.peak_next_button = self.findChild(QPushButton, "peak_next_button")
         self.peak_next_button.clicked.connect(self.next_spike)
         self.peak_back_button = self.findChild(QPushButton, "peak_back_button")
         self.peak_back_button.clicked.connect(self.previous_spike)
-        
-
 
         # WIDGETS FOR THE GRAPHS
         self.raw_data_frame = self.findChild(QFrame, "raw_data_graph_frame")
         self.raw_data_layout = QHBoxLayout(self.raw_data_frame)
         self.raw_data_layout.setObjectName("raw_data_layout")
-
         self.raw_data_figure = Figure()
         self.raw_data_canvas = FigureCanvas(self.raw_data_figure)
         self.raw_data_layout.addWidget(self.raw_data_canvas)
@@ -68,7 +51,6 @@ class UI(QMainWindow):
         self.peak_data_frame = self.findChild(QFrame, "peak_data_graph_frame")
         self.peak_data_layout = QHBoxLayout(self.peak_data_frame)
         self.peak_data_layout.setObjectName("peak_data_layout")
-
         self.peak_data_figure = Figure()
         self.peak_data_canvas = FigureCanvas(self.peak_data_figure)
         self.peak_data_layout.addWidget(self.peak_data_canvas)
@@ -81,32 +63,13 @@ class UI(QMainWindow):
         self.raw_data = None
         self.background_data = None
         self.threshold_data = None
-
         self.data_information = None
-
-
-        """
-        "file_name_text" :      file_name
-        "date_start_text":      date_start
-        "time_start_text":      time_start
-        "date_end_text":        date_end
-        "time_end_text":        time_end
-        "calibration_text"      calibration
-        "tube_voltage_text":    tube_voltage
-        "date_threshold_text":
-        "background_text"
-        "peak_amount_text"
-        "peak_date_text"
-        "peak_time_text"
-        "peak_value_text"
-
-        """
+        self.background_data_average = None
+        self.threshold_data_average = None
 
         # TRACK CURRENT SPIKE INDEX
         self.current_peak_data_index = 0
         self.peak_data_indices = []
-
-    
 
     def change_text(self):
         self.file_name_text.setText(self.data_information["file_name"])
@@ -114,9 +77,19 @@ class UI(QMainWindow):
         self.time_start_text.setText(self.data_information["time_start"])
         self.date_end_text.setText(self.data_information["date_end"])
         self.time_end_text.setText(self.data_information["time_end"])
-        self.calibration_text.setText(self.data_information["calibration_factor"])
-        self.tube_voltage_text.setText(self.data_information["tube_voltage"])
+        self.calibration_text.setText(self.data_information["calibration_factor"].lstrip())
+        self.tube_voltage_text.setText(self.data_information["tube_voltage"].lstrip())
+        
+        # Update background and threshold text with the average values
+        if self.background_data_average is not None:
+            self.background_text.setText(f"{self.background_data_average:.2f}")
+        else:
+            self.background_text.setText("N/A")
 
+        if self.threshold_data_average is not None:
+            self.threshold_text.setText(f"{self.threshold_data_average:.2f}")
+        else:
+            self.threshold_text.setText("N/A")
 
     # FUNCTION TO GET CSV
     def open_csv(self):
@@ -127,11 +100,17 @@ class UI(QMainWindow):
             csv_data = read_csv(file_path)
             processed_data = get_peak(csv_data["raw_data"])
             self.data_information = get_text(csv_data)
-            #print(self.data_information)
-
-            self.change_text()
 
             self.peak_data_indices = processed_data["peak_indices"]
+
+            self.background_data = processed_data["background_graph"]
+            self.background_data_average = sum(self.background_data) / len(self.background_data) if self.background_data else None
+            #print(self.background_data_average)
+
+            self.threshold_data = processed_data["threshold_graph"]
+            self.threshold_data_average = sum(self.threshold_data) / len(self.threshold_data) if self.threshold_data else None
+            #print(self.threshold_data_average)
+            
             self.date_start = csv_data["time_start"]
             self.raw_data = csv_data["raw_data"]
 
@@ -141,11 +120,15 @@ class UI(QMainWindow):
                 self.plot_peak_data()
                 self.plot_raw_data()
 
-    # FUNCTION TO EXPORT CSV
-    def export_csv(self):
-        pass   
+            # Update the text fields
+            self.change_text()
 
+    # FUNCTION TO EXPORT PDF
+    def export_pdf(self):
+        file_path, _ = QFileDialog.getSaveFileName(None, "Save File", "", "PDF Files (*.pdf);;All Files (*)")
 
+        if file_path:
+            export_pdf(self.data_information, self.raw_data, file_path)  # Use the function from exporting.py
 
     # GRAPHING THE PEAK
     def plot_peak_data(self):
@@ -159,7 +142,7 @@ class UI(QMainWindow):
         self.peak_index = self.peak_data_indices[self.current_peak_data_index]
         start = max(0, self.peak_index - 15)
         end = min(len(self.raw_data), self.peak_index + 15)
-        
+
         x = range(start, end)
         y = self.raw_data[start:end]
 
@@ -176,21 +159,17 @@ class UI(QMainWindow):
         highest_value = max(y)
         self.peak_value_text.setText(str(highest_value))
 
-
     # SHOW NEXT SPIKE
     def next_spike(self):
         if self.peak_data_indices:
             self.current_peak_data_index = (self.current_peak_data_index + 1) % len(self.peak_data_indices)
             self.plot_peak_data()
 
-            
-
     # SHOW PREVIOUS SPIKE
     def previous_spike(self):
         if self.peak_data_indices:
             self.current_peak_data_index = (self.current_peak_data_index - 1) % len(self.peak_data_indices)
             self.plot_peak_data()
-
 
     # GRAPHING THE RAW DATA
     def plot_raw_data(self):
