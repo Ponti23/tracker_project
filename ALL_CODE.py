@@ -24,26 +24,26 @@ def GetThresh(background):
 """
     Get TIME of an index
 """
-def get_time(time_started, indices):
+from datetime import datetime, timedelta
+
+def get_time(time_started, index):
     # Parse the time_start string into a datetime object
     start_time = datetime.strptime(time_started, "%H:%M:%S %m-%d-%y")
     
-    # Calculate time @ index
-    current_times = []
-    for index in indices:
-        # Calculate the total elapsed time in seconds
-        elapsed_seconds = index * 0.25
-        
-        # Calculate the end time by adding the elapsed time to the start time
-        current_time = start_time + timedelta(seconds=elapsed_seconds)
-        
-        # Calculate the total elapsed time in days
-        elapsed_days = elapsed_seconds / (24 * 3600)
+    # Calculate the total elapsed time in seconds
+    elapsed_seconds = index * 0.25
+    
+    # Calculate the end time by adding the elapsed time to the start time
+    current_time = start_time + timedelta(seconds=elapsed_seconds)
+    
+    # Calculate the total elapsed time in days
+    elapsed_days = elapsed_seconds / (24 * 3600)
     
     return {
         "elapsed_days": elapsed_days,
         "current_time": current_time
     }
+
 
 
 
@@ -125,8 +125,7 @@ def get_text(raw_data):
 
     # Calculate end date and end time using get_time function
     len_data = len(raw_data['raw_data'])
-    indices = [len_data - 1]
-    time_info = get_time(raw_data['time_start'], indices)
+    time_info = get_time(raw_data['time_start'], len_data - 1)
 
     date_end = time_info['current_time'].strftime("%m-%d-%y")
     time_end = time_info['current_time'].strftime("%H:%M:%S")
@@ -139,5 +138,8 @@ def get_text(raw_data):
         "date_end": date_end,
         "time_end": time_end,
         "calibration_factor": calibration_factor,
-        "tube_voltage": tube_voltage
+        "tube_voltage": tube_voltage,
+        "background": raw_data.get("background", ""),
+        "threshold": raw_data.get("threshold", ""),
+        ###"peak_amount": len(raw_data.get("peak_indices", []))
     }

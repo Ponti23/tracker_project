@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1317</width>
+    <width>1235</width>
     <height>752</height>
    </rect>
   </property>
@@ -22,7 +22,7 @@
      <rect>
       <x>10</x>
       <y>340</y>
-      <width>931</width>
+      <width>851</width>
       <height>321</height>
      </rect>
     </property>
@@ -52,7 +52,7 @@ border-radius: 4px;</string>
    <widget class="QFrame" name="peak_data_graph_frame">
     <property name="geometry">
      <rect>
-      <x>960</x>
+      <x>880</x>
       <y>90</y>
       <width>351</width>
       <height>431</height>
@@ -119,7 +119,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>000000000000</string>
+      <string>-- -- -- --</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -215,7 +215,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>000000000000</string>
+      <string>-- -- -- --</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -243,7 +243,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>00:00:00</string>
+      <string>--:--:--</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -319,7 +319,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>000000000000</string>
+      <string>-- -- -- --</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -347,7 +347,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>00:00:00</string>
+      <string>--:--:--</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -399,7 +399,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>00000000</string>
+      <string>-- -- -- --</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -451,7 +451,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>000000000000</string>
+      <string>-- -- -- --</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -488,7 +488,7 @@ border-radius: 4px;</string>
    <widget class="QFrame" name="peaks_frame">
     <property name="geometry">
      <rect>
-      <x>960</x>
+      <x>880</x>
       <y>10</y>
       <width>351</width>
       <height>71</height>
@@ -509,7 +509,7 @@ border-radius: 4px;</string>
       <rect>
        <x>20</x>
        <y>10</y>
-       <width>101</width>
+       <width>121</width>
        <height>31</height>
       </rect>
      </property>
@@ -523,7 +523,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>000000000000</string>
+      <string>-- -- --</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -560,7 +560,7 @@ border-radius: 4px;</string>
    <widget class="Line" name="line">
     <property name="geometry">
      <rect>
-      <x>940</x>
+      <x>860</x>
       <y>0</y>
       <width>20</width>
       <height>751</height>
@@ -573,7 +573,7 @@ border-radius: 4px;</string>
    <widget class="QFrame" name="peak_data_frame">
     <property name="geometry">
      <rect>
-      <x>960</x>
+      <x>880</x>
       <y>540</y>
       <width>351</width>
       <height>131</height>
@@ -632,7 +632,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>000000000000</string>
+      <string>-- -- -- --</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -660,7 +660,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>00:00:00</string>
+      <string>--:--:--</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -712,7 +712,7 @@ border-radius: 4px;</string>
       </font>
      </property>
      <property name="text">
-      <string>000000000000</string>
+      <string>-- -- -- --</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -821,7 +821,7 @@ border-radius: 4px;</string>
    <widget class="QFrame" name="peak_buttons_frame">
     <property name="geometry">
      <rect>
-      <x>960</x>
+      <x>880</x>
       <y>700</y>
       <width>351</width>
       <height>51</height>
@@ -928,6 +928,78 @@ border-radius: 4px;</string>
      <string>Export File</string>
     </property>
    </widget>
+   <widget class="QFrame" name="background_frame">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>670</y>
+      <width>241</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);
+border-radius: 4px;</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="background_text">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>10</y>
+       <width>151</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Cascadia Code ExtraLight</family>
+       <pointsize>11</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>000000000000</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::AutoText</enum>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="background_label">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>191</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Cascadia Code SemiBold</family>
+       <pointsize>11</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Average Background</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </widget>
    <zorder>raw_data_graph_frame</zorder>
    <zorder>peak_data_graph_frame</zorder>
    <zorder>file_frame</zorder>
@@ -939,6 +1011,7 @@ border-radius: 4px;</string>
    <zorder>peak_buttons_frame</zorder>
    <zorder>open_file_button</zorder>
    <zorder>export_file_button</zorder>
+   <zorder>background_frame</zorder>
   </widget>
  </widget>
  <resources/>

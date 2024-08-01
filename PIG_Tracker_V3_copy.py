@@ -9,6 +9,8 @@ from numpy import random
 
 from ALL_CODE import *
 
+#NEEEEEEEEEEEEED TO FIIIIIIIIIIIIIIIIIIIIX
+from exporting import export_file
 
 class UI(QMainWindow):
     def __init__(self):
@@ -43,7 +45,9 @@ class UI(QMainWindow):
         self.open_file_button = self.findChild(QPushButton, "open_file_button")
         self.open_file_button.clicked.connect(self.open_csv)
         self.export_file_button = self.findChild(QPushButton, "export_file_button")
-        self.export_file_button.clicked.connect(self.export_csv)
+
+        ###### NEEEEEEEEEEED TO FIIIIIIIIIIIIIIIIIIIIIIIX
+        self.export_file_button.clicked.connect(lambda: export_file(self))
 
         self.peak_next_button = self.findChild(QPushButton, "peak_next_button")
         self.peak_next_button.clicked.connect(self.next_spike)
@@ -120,38 +124,18 @@ class UI(QMainWindow):
 
         if file_path:
             file_name = QtCore.QFileInfo(file_path).fileName()
-            raw_data = read_csv(file_path)
-            processed_data = get_peak(raw_data["raw_data"])
-            self.data_information = get_text(raw_data)
+            csv_data = read_csv(file_path)
+            processed_data = get_peak(csv_data["raw_data"])
+            self.data_information = get_text(csv_data)
             #print(self.data_information)
 
             self.change_text()
 
             self.peak_data_indices = processed_data["peak_indices"]
+            self.date_start = csv_data["time_start"]
+            self.raw_data = csv_data["raw_data"]
 
-            FN = str(raw_data['file_name'])
-            TS = str(raw_data['time_start'])
-            TV = str(raw_data['tube_voltage'])
-            CF = str(raw_data['calibration_factor'])
-
-            rdata = raw_data["raw_data"]
-            len_data = len(rdata)
-            ldata = []
-            ldata.append(len_data)
-
-            RD = str(len(rdata))
-            self.peak_data = rdata
-            self.raw_data = rdata
-
-            time = get_time(TS, ldata)
-
-            tdays = time["elapsed_days"]
-            ctime = time["current_time"]
-
-            message = f"Filename: {FN} \nTime Start: {TS} \nTube Voltage: {TV} \nCalibration Factor: {CF} \n\nElapsed Days: {tdays} \nTime End: {ctime}"
-            message2 = f"LENGTH OF DATA: {RD}"
-            #self.text_right.setText(message)
-            #self.text_left.setText(message2)
+            self.current_peak_data_index = 0
 
             if self.peak_data_indices:
                 self.plot_peak_data()
@@ -160,6 +144,8 @@ class UI(QMainWindow):
     # FUNCTION TO EXPORT CSV
     def export_csv(self):
         pass   
+
+
 
     # GRAPHING THE PEAK
     def plot_peak_data(self):
@@ -170,18 +156,26 @@ class UI(QMainWindow):
         self.peak_data_figure.clear()
         ax = self.peak_data_figure.add_subplot(111)
 
-        index = self.peak_data_indices[self.current_peak_data_index]
-        start = max(0, index - 15)
-        end = min(len(self.raw_data), index + 15)
+        self.peak_index = self.peak_data_indices[self.current_peak_data_index]
+        start = max(0, self.peak_index - 15)
+        end = min(len(self.raw_data), self.peak_index + 15)
         
         x = range(start, end)
         y = self.raw_data[start:end]
 
         ax.plot(x, y, label='peak_data')
-        ax.axvline(x=index, color='r', linestyle='--', label='Spike Index')
+        ax.axvline(x=self.peak_index, color='r', linestyle='--', label='Spike Index')
         ax.legend()
 
         self.peak_data_canvas.draw()
+
+        current_peak_time = get_time(self.date_start, self.peak_index)           
+        self.peak_date_text.setText(current_peak_time["current_time"].strftime("%m-%d-%y"))
+        self.peak_time_text.setText(current_peak_time["current_time"].strftime("%H:%M:%S"))
+
+        highest_value = max(y)
+        self.peak_value_text.setText(str(highest_value))
+
 
     # SHOW NEXT SPIKE
     def next_spike(self):
@@ -189,11 +183,14 @@ class UI(QMainWindow):
             self.current_peak_data_index = (self.current_peak_data_index + 1) % len(self.peak_data_indices)
             self.plot_peak_data()
 
+            
+
     # SHOW PREVIOUS SPIKE
     def previous_spike(self):
         if self.peak_data_indices:
             self.current_peak_data_index = (self.current_peak_data_index - 1) % len(self.peak_data_indices)
             self.plot_peak_data()
+
 
     # GRAPHING THE RAW DATA
     def plot_raw_data(self):
