@@ -1,12 +1,13 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QFileDialog, QPushButton, QFrame, QHBoxLayout, QSizePolicy
 from PyQt5 import uic, QtCore
 import sys
+
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from numpy import random
+
 from all_code import *
-from exporting import export_pdf  # Import the export_pdf function
+from exporting import *  # Import the export_pdf function
 
 class UI(QMainWindow):
     def __init__(self):
@@ -66,19 +67,31 @@ class UI(QMainWindow):
         # SHOW ALL
         self.show()
 
-        # DATA
+        ########################################
+        ####           VARIABLES            ####
+        ########################################
+        
         self.peak_data = None
         self.raw_data = None
         self.background_data = None
         self.threshold_data = None
+
+
         self.data_information = None
         self.background_data_average = None
         self.threshold_data_average = None
+        self.compiled_data = None
 
         # TRACK CURRENT SPIKE INDEX
         self.current_peak_data_index = 0
         self.peak_data_indices = []
 
+    
+    ########################################
+    ####          UI FUNCTIONS          ####
+    ########################################
+
+    # CHANGE LABEL TEXTS
     def change_text(self):
         self.file_name_text.setText(self.data_information["file_name"])
         self.date_start_text.setText(self.data_information["date_start"])
@@ -101,7 +114,12 @@ class UI(QMainWindow):
         else:
             self.threshold_text.setText("N/A")
 
-    # FUNCTION TO GET CSV
+
+    ########################################
+    ####          CSV FUNCTIONS         ####
+    ########################################
+
+    # FUNCTION TO OPEN CSV
     def open_csv(self):
         file_path, _ = QFileDialog.getOpenFileName(None, "Open File", "", "CSV Files (*.csv);;All Files (*)")
 
@@ -133,10 +151,25 @@ class UI(QMainWindow):
 
     # FUNCTION TO EXPORT PDF
     def export_pdf(self):
-        file_path, _ = QFileDialog.getSaveFileName(None, "Save File", "", "PDF Files (*.pdf);;All Files (*)")
+        pass
 
-        if file_path:
-            export_pdf(self.data_information, self.raw_data, file_path)  # Use the function from exporting.py
+    
+    ########################################
+    ####       GRAPHING FUNCTIONS       ####
+    ########################################
+
+    # GRAPHING THE RAW DATA
+    def plot_raw_data(self):
+        self.raw_data_figure.clear()
+        ax = self.raw_data_figure.add_subplot(111)
+
+        x = range(len(self.raw_data))
+        y = self.raw_data
+
+        ax.plot(x, y, label='raw_data')
+        ax.legend()
+
+        self.raw_data_canvas.draw()
 
     # GRAPHING THE PEAK
     def plot_peak_data(self):
@@ -181,19 +214,6 @@ class UI(QMainWindow):
             self.current_peak_data_index = (self.current_peak_data_index - 1) % len(self.peak_data_indices)
             self.plot_peak_data()
             self.peak_current_index.setText((str(self.current_peak_data_index + 1)))
-
-    # GRAPHING THE RAW DATA
-    def plot_raw_data(self):
-        self.raw_data_figure.clear()
-        ax = self.raw_data_figure.add_subplot(111)
-
-        x = range(len(self.raw_data))
-        y = self.raw_data
-
-        ax.plot(x, y, label='raw_data')
-        ax.legend()
-
-        self.raw_data_canvas.draw()
 
 app = QApplication(sys.argv)
 UIWindow = UI()

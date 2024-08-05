@@ -1,12 +1,12 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QFileDialog, QPushButton, QFrame, QHBoxLayout, QSizePolicy
 from PyQt5 import uic, QtCore
 import sys
-import matplotlib.pyplot as plt
+
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from numpy import random
+
 from all_code import *
-from exporting import export_pdf  # Import the export_pdf function
+from exporting import export_pdf
 
 class UI(QMainWindow):
     def __init__(self):
@@ -14,8 +14,11 @@ class UI(QMainWindow):
 
         uic.loadUi("main.ui", self)
 
-        # DEFINE WIDGETS
-        # INFORMATION TEXT
+        
+        ########################################
+        ####            TEXTS               ####
+        ########################################
+
         self.file_name_text = self.findChild(QLabel, "file_name_text")
 
         self.date_start_text = self.findChild(QLabel, "date_start_text")
@@ -36,17 +39,30 @@ class UI(QMainWindow):
 
         self.peak_value_text = self.findChild(QLabel, "peak_value_text")
 
-        # BUTTONS
+        ########################################
+        ####            BUTTONS             ####
+        ########################################
+
+        # OPENNING FILE
         self.open_file_button = self.findChild(QPushButton, "open_file_button")
         self.open_file_button.clicked.connect(self.open_csv)
+
+        # EXPORTING FILE
         self.export_file_button = self.findChild(QPushButton, "export_file_button")
-        self.export_file_button.clicked.connect(self.export_pdf)  # Updated to call the new function
+        self.export_file_button.clicked.connect(self.export_pdf)
+
+        # NEXT PEAK
         self.peak_next_button = self.findChild(QPushButton, "peak_next_button")
         self.peak_next_button.clicked.connect(self.next_spike)
+
+        # PREVIOUS PEAK
         self.peak_back_button = self.findChild(QPushButton, "peak_back_button")
         self.peak_back_button.clicked.connect(self.previous_spike)
 
-        # WIDGETS FOR THE GRAPHS
+        ########################################
+        ####        GRAPHING WIDGETS        ####
+        ########################################
+
         self.raw_data_frame = self.findChild(QFrame, "raw_data_graph_frame")
         self.raw_data_layout = QHBoxLayout(self.raw_data_frame)
         self.raw_data_layout.setObjectName("raw_data_layout")
@@ -78,6 +94,9 @@ class UI(QMainWindow):
         # TRACK CURRENT SPIKE INDEX
         self.current_peak_data_index = 0
         self.peak_data_indices = []
+
+    def export_pdf(self):
+        export_pdf = export_pdf
 
     def change_text(self):
         self.file_name_text.setText(self.data_information["file_name"])
@@ -131,13 +150,6 @@ class UI(QMainWindow):
             # Update the text fields
             self.change_text()
 
-    # FUNCTION TO EXPORT PDF
-    def export_pdf(self):
-        file_path, _ = QFileDialog.getSaveFileName(None, "Save File", "", "PDF Files (*.pdf);;All Files (*)")
-
-        if file_path:
-            export_pdf(self.data_information, self.raw_data, file_path)  # Use the function from exporting.py
-
     # GRAPHING THE PEAK
     def plot_peak_data(self):
         if not self.peak_data_indices:
@@ -149,7 +161,7 @@ class UI(QMainWindow):
 
         self.peak_index = self.peak_data_indices[self.current_peak_data_index]
         start = max(0, self.peak_index - 10)
-        end = min(len(self.raw_data), self.peak_index + 10)
+        end = min(len(self.raw_data), self.peak_index + 15)
 
         x = range(start, end)
         y = self.raw_data[start:end]
