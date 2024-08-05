@@ -1,11 +1,14 @@
 import csv
 from datetime import datetime, timedelta
 
-##########################################################
+################################################################
+###                                                          ###
+################################################################
+
 def hex_to_decimal(hex_str):
     return int(hex_str, 16)
 
-def GetBG(samps):
+def get_background(samps):
     background = 0
     accum = 0
     for samp in samps:
@@ -16,36 +19,8 @@ def GetBG(samps):
         
     return background
 
-def GetThresh(background):
+def get_threshold(background):
     return int(7*(background**0.5) + background + 0.5)
-##########################################################
-
-
-"""
-    Get TIME of an index
-"""
-from datetime import datetime, timedelta
-
-def get_time(time_started, index):
-    # Parse the time_start string into a datetime object
-    start_time = datetime.strptime(time_started, "%H:%M:%S %m-%d-%y")
-    
-    # Calculate the total elapsed time in seconds
-    elapsed_seconds = index * 0.25
-    
-    # Calculate the end time by adding the elapsed time to the start time
-    current_time = start_time + timedelta(seconds=elapsed_seconds)
-    
-    # Calculate the total elapsed time in days
-    elapsed_days = elapsed_seconds / (24 * 3600)
-    
-    return {
-        "elapsed_days": elapsed_days,
-        "current_time": current_time
-    }
-
-
-
 
 def read_csv(file_path):
     with open(file_path, mode='r') as file:
@@ -70,10 +45,15 @@ def read_csv(file_path):
         "calibration_factor": calibration_factor
     }
 
+
+################################################################
+###                                                          ###
+################################################################
+
 def get_peak(raw_data):
     BGCounts = 256
-    background = GetBG(raw_data[0:BGCounts])
-    threshold = GetThresh(background)
+    background = get_background(raw_data[0:BGCounts])
+    threshold = get_threshold(background)
     
     peak_indices = []
     average_sample_graph = []
@@ -99,9 +79,9 @@ def get_peak(raw_data):
         elif aveSamp <= threshold and in_pulse:
             in_pulse = False
             
-        temp = GetBG(raw_data[i-BGCounts:i])
+        temp = get_background(raw_data[i-BGCounts:i])
         background = temp
-        threshold = GetThresh(background)
+        threshold = get_threshold(background)
             
         background_graph.append(temp)
         threshold_graph.append(threshold)
@@ -111,6 +91,28 @@ def get_peak(raw_data):
         "average_sample_graph": average_sample_graph,
         "background_graph": background_graph,
         "threshold_graph": threshold_graph
+    }
+
+################################################################
+###                                                          ###
+################################################################
+
+def get_time(time_started, index):
+    # Parse the time_start string into a datetime object
+    start_time = datetime.strptime(time_started, "%H:%M:%S %m-%d-%y")
+    
+    # Calculate the total elapsed time in seconds
+    elapsed_seconds = index * 0.25
+    
+    # Calculate the end time by adding the elapsed time to the start time
+    current_time = start_time + timedelta(seconds=elapsed_seconds)
+    
+    # Calculate the total elapsed time in days
+    elapsed_days = elapsed_seconds / (24 * 3600)
+    
+    return {
+        "elapsed_days": elapsed_days,
+        "current_time": current_time
     }
 
 def get_text(raw_data):
@@ -141,5 +143,4 @@ def get_text(raw_data):
         "tube_voltage": tube_voltage,
         "background": raw_data.get("background", ""),
         "threshold": raw_data.get("threshold", ""),
-        ###"peak_amount": len(raw_data.get("peak_indices", []))
     }
