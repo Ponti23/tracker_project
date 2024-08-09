@@ -87,10 +87,12 @@ class UI(QMainWindow):
         self.raw_data = None
         self.background_data = None
         self.threshold_data = None
+        
         self.data_information = None
+
         self.background_data_average = None
         self.threshold_data_average = None
-        self.document_information = ["ASDASDASDASDASDASDASDASDASDASDASDASDASDASDASD"]
+        self.document_information = None
 
         # TRACK CURRENT SPIKE INDEX
         self.current_peak_data_index = 0
@@ -98,9 +100,8 @@ class UI(QMainWindow):
 
     def export_pdf(self):
         # Open a file dialog for the user to select the location to save the PDF
-        file_path, _ = QFileDialog.getSaveFileName(None, "Save File", "", "Doc File (*.docx);;All Files (*)")
-        template_path = "petritek_template.docx"
-        modify_template(template_path, self.document_information, file_path)
+        #file_path, _ = QFileDialog.getSaveFileName(None, "Save File", "", "Doc File (*.docx);;All Files (*)")
+        modify_template(self.document_information)
 
 
 
@@ -126,15 +127,45 @@ class UI(QMainWindow):
         else:
             self.threshold_text.setText("N/A")
 
+        recording_elapsed = get_time(self.csv_data["time_start"], len(self.raw_data))
+        
+
+
+        return {
+                'file_name':            str(self.data_information["file_name"]),
+                'date_start':           str(self.data_information["date_start"]),
+                'date_end' :            str(self.data_information["date_end"]),
+                'time_end'  :           str(self.data_information["time_end"]),
+                'calibration_factor' :  str(self.data_information["calibration_factor"].lstrip()),
+                'tube_voltage' :        str(self.data_information["tube_voltage"].lstrip()),
+                'recording_elapsed' :   str(recording_elapsed["elapsed_days"]),
+                'total_peak' :          str(len(self.peak_data_indices)),
+
+                'peak_data' : { 
+                    0 : {'peak_index':  'peak_index',
+                         'peak_value':  'peak_value',
+                         'peak_date' :  'peak_date',
+                         'peak_time' :  'peak_time'
+                         },
+
+                    1 : {'peak_index':  'peak_index',
+                         'peak_value':  'peak_value',
+                         'peak_date' :  'peak_date',
+                         'peak_time' :  'peak_time'
+                         }
+                }  
+        }
+
+
     # FUNCTION TO GET CSV
     def open_csv(self):
         file_path, _ = QFileDialog.getOpenFileName(None, "Open File", "", "CSV Files (*.csv);;All Files (*)")
 
         if file_path:
             file_name = QtCore.QFileInfo(file_path).fileName()
-            csv_data = read_csv(file_path)
-            processed_data = get_peak(csv_data["raw_data"])
-            self.data_information = get_text(csv_data)
+            self.csv_data = read_csv(file_path)
+            processed_data = get_peak(self.csv_data["raw_data"])
+            self.data_information = get_text(self.csv_data)
 
             self.peak_data_indices = processed_data["peak_indices"]
 
@@ -144,8 +175,8 @@ class UI(QMainWindow):
             self.threshold_data = processed_data["threshold_graph"]
             self.threshold_data_average = sum(self.threshold_data) / len(self.threshold_data) if self.threshold_data else None
 
-            self.date_start = csv_data["time_start"]
-            self.raw_data = csv_data["raw_data"]
+            self.date_start = self.csv_data["time_start"]
+            self.raw_data = self.csv_data["raw_data"]
 
             self.current_peak_data_index = 0
 
@@ -153,8 +184,9 @@ class UI(QMainWindow):
                 self.plot_peak_data()
                 self.plot_raw_data()
 
-            # Update the text fields
-            self.change_text()
+            # Update the text fields                        ##########################################################
+            self.document_information= self.change_text()   ####     SAVED HERE ARE ALL THE INFO FOR THE PDF      ####
+                                                            ##########################################################
 
     # GRAPHING THE PEAK
     def plot_peak_data(self):
