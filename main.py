@@ -6,7 +6,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
 from all_code import *
-from exporting import export_pdf
+from exporting import modify_template
 
 class UI(QMainWindow):
     def __init__(self):
@@ -90,13 +90,19 @@ class UI(QMainWindow):
         self.data_information = None
         self.background_data_average = None
         self.threshold_data_average = None
+        self.document_information = ["ASDASDASDASDASDASDASDASDASDASDASDASDASDASDASD"]
 
         # TRACK CURRENT SPIKE INDEX
         self.current_peak_data_index = 0
         self.peak_data_indices = []
 
     def export_pdf(self):
-        export_pdf = export_pdf
+        # Open a file dialog for the user to select the location to save the PDF
+        file_path, _ = QFileDialog.getSaveFileName(None, "Save File", "", "Doc File (*.docx);;All Files (*)")
+        template_path = "petritek_template.docx"
+        modify_template(template_path, self.document_information, file_path)
+
+
 
     def change_text(self):
         self.file_name_text.setText(self.data_information["file_name"])
@@ -172,7 +178,7 @@ class UI(QMainWindow):
         self.peak_data_canvas.draw()
 
         current_peak_time = get_time(self.date_start, self.peak_index)
-        self.peak_date_text.setText(current_peak_time["current_time"].strftime("%m-%d-%y"))
+        self.peak_date_text.setText(current_peak_time["current_time"].strftime("%d-%m-%y"))
         self.peak_time_text.setText(current_peak_time["current_time"].strftime("%H:%M:%S"))
 
         highest_value = max(y)

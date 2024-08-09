@@ -99,7 +99,7 @@ def get_peak(raw_data):
 
 def get_time(time_started, index):
     # Parse the time_start string into a datetime object
-    start_time = datetime.strptime(time_started, "%H:%M:%S %m-%d-%y")
+    start_time = datetime.strptime(time_started, "%H:%M:%S %d-%m-%y")
     
     # Calculate the total elapsed time in seconds
     elapsed_seconds = index * 0.25
@@ -118,8 +118,8 @@ def get_time(time_started, index):
 def get_text(raw_data):
     # Extract file name, start date, and start time
     file_name = raw_data['file_name']
-    date_start = datetime.strptime(raw_data['time_start'], "%H:%M:%S %m-%d-%y").strftime("%m-%d-%y")
-    time_start = datetime.strptime(raw_data['time_start'], "%H:%M:%S %m-%d-%y").strftime("%H:%M:%S")
+    date_start = datetime.strptime(raw_data['time_start'], "%H:%M:%S %d-%m-%y").strftime("%d-%m-%y")
+    time_start = datetime.strptime(raw_data['time_start'], "%H:%M:%S %d-%m-%y").strftime("%H:%M:%S")
 
     # Extract calibration factor and tube voltage
     calibration_factor = raw_data['calibration_factor']
@@ -129,7 +129,7 @@ def get_text(raw_data):
     len_data = len(raw_data['raw_data'])
     time_info = get_time(raw_data['time_start'], len_data - 1)
 
-    date_end = time_info['current_time'].strftime("%m-%d-%y")
+    date_end = time_info['current_time'].strftime("%d-%m-%y")
     time_end = time_info['current_time'].strftime("%H:%M:%S")
 
     # Return as a dictionary
