@@ -6,7 +6,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
 from ALL_CODE import *
-from exporting import generate_pdf
+from exporting import create_pdf
 
 class UI(QMainWindow):
     def __init__(self):
@@ -85,7 +85,7 @@ class UI(QMainWindow):
         self.peak_data = []
         self.raw_data = None
         self.background_data = None
-        self.threshold_data = None
+        self.threshold_data = None 
         
         self.data_information = None
 
@@ -99,17 +99,17 @@ class UI(QMainWindow):
     def export_pdf(self):
         # Populate peak_data list
         for index in self.peak_data_indices:
-            datapoint = self.get_peak_data(index)
+            index_datetime = get_time(self.date_start, index)
+            index_date = index_datetime["current_time"].strftime("%d-%m-%y")
+            index_time = index_datetime["current_time"].strftime("%H:%M:%S")
+
+            datapoint = self.get_peak_data(index, index_date, index_time)
             self.peak_data.append(datapoint)
 
-        print(self.peak_data)
+        create_pdf(self.document_information)
+        print(self.document_information)
 
-        # Pass the actual file name text to generate_pdf
-        file_name = self.file_name_text.text()
-        file_name= file_name.replace(".csv", "")
-        generate_pdf(self.document_information, file_name)
-
-    def get_peak_data(self, index, before=10, after=15):
+    def get_peak_data(self, index, index_date, index_time, before=10, after=15):
         # Ensure index is within bounds
         start = max(0, index - before)
         end = min(len(self.raw_data), index + after)
@@ -121,6 +121,8 @@ class UI(QMainWindow):
         # Create and return the result dictionary
         result = {
             'index': index,
+            'date' : index_date,
+            'time' : index_time,
             'x-axis': x_axis,
             'y-axis': y_axis
         }
