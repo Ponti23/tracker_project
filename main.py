@@ -5,8 +5,8 @@ import sys
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
-from all_code import *
-from exporting import modify_template
+from ALL_CODE import *
+from exporting import generate_pdf
 
 class UI(QMainWindow):
     def __init__(self):
@@ -14,7 +14,6 @@ class UI(QMainWindow):
 
         uic.loadUi("main.ui", self)
 
-        
         ########################################
         ####            TEXTS               ####
         ########################################
@@ -83,7 +82,7 @@ class UI(QMainWindow):
         self.show()
 
         # DATA
-        self.peak_data = None
+        self.peak_data = []
         self.raw_data = None
         self.background_data = None
         self.threshold_data = None
@@ -96,14 +95,37 @@ class UI(QMainWindow):
 
         # TRACK CURRENT SPIKE INDEX
         self.current_peak_data_index = 0
-        self.peak_data_indices = []
 
     def export_pdf(self):
-        # Open a file dialog for the user to select the location to save the PDF
-        #file_path, _ = QFileDialog.getSaveFileName(None, "Save File", "", "Doc File (*.docx);;All Files (*)")
-        modify_template(self.document_information)
+        # Populate peak_data list
+        for index in self.peak_data_indices:
+            datapoint = self.get_peak_data(index)
+            self.peak_data.append(datapoint)
 
+        print(self.peak_data)
 
+        # Pass the actual file name text to generate_pdf
+        file_name = self.file_name_text.text()
+        file_name= file_name.replace(".csv", "")
+        generate_pdf(self.document_information, file_name)
+
+    def get_peak_data(self, index, before=10, after=15):
+        # Ensure index is within bounds
+        start = max(0, index - before)
+        end = min(len(self.raw_data), index + after)
+        
+        # Extract the x and y values
+        x_axis = list(range(start, end))
+        y_axis = self.raw_data[start:end]
+        
+        # Create and return the result dictionary
+        result = {
+            'index': index,
+            'x-axis': x_axis,
+            'y-axis': y_axis
+        }
+        
+        return result
 
     def change_text(self):
         self.file_name_text.setText(self.data_information["file_name"])
@@ -129,35 +151,18 @@ class UI(QMainWindow):
 
         recording_elapsed = get_time(self.csv_data["time_start"], len(self.raw_data))
         
-
-
         return {
-                'file_name':            str(self.data_information["file_name"]),
-                'date_start':           str(self.data_information["date_start"]),
-                'date_end' :            str(self.data_information["date_end"]),
-                'time_end'  :           str(self.data_information["time_end"]),
-                'calibration_factor' :  str(self.data_information["calibration_factor"].lstrip()),
-                'tube_voltage' :        str(self.data_information["tube_voltage"].lstrip()),
-                'recording_elapsed' :   str(recording_elapsed["elapsed_days"]),
-                'total_peak' :          str(len(self.peak_data_indices)),
-
-                'peak_data' : { 
-                    0 : {'peak_index':  'peak_index',
-                         'peak_value':  'peak_value',
-                         'peak_date' :  'peak_date',
-                         'peak_time' :  'peak_time'
-                         },
-
-                    1 : {'peak_index':  'peak_index',
-                         'peak_value':  'peak_value',
-                         'peak_date' :  'peak_date',
-                         'peak_time' :  'peak_time'
-                         }
-                }  
+            'file_name':            str(self.data_information["file_name"]),
+            'date_start':           str(self.data_information["date_start"]),
+            'date_end' :            str(self.data_information["date_end"]),
+            'time_end'  :           str(self.data_information["time_end"]),
+            'calibration_factor' :  str(self.data_information["calibration_factor"].lstrip()),
+            'tube_voltage' :        str(self.data_information["tube_voltage"].lstrip()),
+            'recording_elapsed' :   str(recording_elapsed["elapsed_days"]),
+            'total_peak' :          str(len(self.peak_data_indices)),
+            'peak_data' :           self.peak_data
         }
 
-
-    # FUNCTION TO GET CSV
     def open_csv(self):
         file_path, _ = QFileDialog.getOpenFileName(None, "Open File", "", "CSV Files (*.csv);;All Files (*)")
 
@@ -184,11 +189,9 @@ class UI(QMainWindow):
                 self.plot_peak_data()
                 self.plot_raw_data()
 
-            # Update the text fields                        ##########################################################
-            self.document_information= self.change_text()   ####     SAVED HERE ARE ALL THE INFO FOR THE PDF      ####
-                                                            ##########################################################
-
-    # GRAPHING THE PEAK
+            # Update the text fields
+            self.document_information = self.change_text()
+        
     def plot_peak_data(self):
         if not self.peak_data_indices:
             self.text_left.setText("No spike indices available!")
@@ -218,33 +221,27 @@ class UI(QMainWindow):
 
         self.peak_current_index.setText((str(self.current_peak_data_index + 1)))
 
-    # SHOW NEXT SPIKE
     def next_spike(self):
         if self.peak_data_indices:
             self.current_peak_data_index = (self.current_peak_data_index + 1) % len(self.peak_data_indices)
             self.plot_peak_data()
             self.peak_current_index.setText((str(self.current_peak_data_index + 1)))
 
-    # SHOW PREVIOUS SPIKE
     def previous_spike(self):
         if self.peak_data_indices:
             self.current_peak_data_index = (self.current_peak_data_index - 1) % len(self.peak_data_indices)
             self.plot_peak_data()
             self.peak_current_index.setText((str(self.current_peak_data_index + 1)))
 
-    # GRAPHING THE RAW DATA
     def plot_raw_data(self):
         self.raw_data_figure.clear()
         ax = self.raw_data_figure.add_subplot(111)
-
-        x = range(len(self.raw_data))
-        y = self.raw_data
-
-        ax.plot(x, y, label='raw_data')
+        
+        ax.plot(self.raw_data, label='raw_data')
         ax.legend()
 
         self.raw_data_canvas.draw()
 
 app = QApplication(sys.argv)
-UIWindow = UI()
+window = UI()
 app.exec_()
