@@ -167,7 +167,7 @@ class UI(QMainWindow):
             'peak_data' :       self.peak_data,
             'raw_data' :        self.raw_data,
             'background_data' : self.background_data,
-            'threshold':        self.threshold_data,
+            'threshold_data':        self.threshold_data,
 
         }
 
