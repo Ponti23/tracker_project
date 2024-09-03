@@ -106,7 +106,7 @@ class UI(QMainWindow):
             datapoint = self.get_peak_data(index, index_date, index_time)
             self.peak_data.append(datapoint)
 
-        create_pdf(self.document_information)
+        #create_pdf(self.document_information)
         print(self.document_information)
 
     def get_peak_data(self, index, index_date, index_time, before=10, after=15):
@@ -156,13 +156,19 @@ class UI(QMainWindow):
         return {
             'file_name':            str(self.data_information["file_name"]),
             'date_start':           str(self.data_information["date_start"]),
+            'time_start':           str(self.data_information["time_start"]),
             'date_end' :            str(self.data_information["date_end"]),
             'time_end'  :           str(self.data_information["time_end"]),
             'calibration_factor' :  str(self.data_information["calibration_factor"].lstrip()),
             'tube_voltage' :        str(self.data_information["tube_voltage"].lstrip()),
             'recording_elapsed' :   str(recording_elapsed["elapsed_days"]),
             'total_peak' :          str(len(self.peak_data_indices)),
-            'peak_data' :           self.peak_data
+            
+            'peak_data' :       self.peak_data,
+            'raw_data' :        self.raw_data,
+            'background_data' : self.background_data,
+            'threshold':        self.threshold_data,
+
         }
 
     def open_csv(self):
