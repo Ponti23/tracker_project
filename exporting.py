@@ -1,11 +1,31 @@
+import matplotlib.pyplot as plt
+import numpy as np
+from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageTemplate, BaseDocTemplate, Frame, PageBreak
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageTemplate, BaseDocTemplate, Frame, PageBreak, Image
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
-from io import BytesIO
+from PIL import Image as PilImage
 from datetime import datetime
-from PIL import Image as PilImage  # Correct import for PIL.Image
+
+
+def plot_raw(raw_data):
+    """Generate a plot for raw_data and return it as an image."""
+    fig, ax = plt.subplots()
+    ax.plot(raw_data)
+    ax.set_title('Raw Data')
+    ax.set_xlabel('Index')
+    ax.set_ylabel('Value')
+    ax.grid(True)
+
+    # Save the plot to a BytesIO object
+    image_stream = BytesIO()
+    plt.savefig(image_stream, format='png')
+    plt.close(fig)
+    image_stream.seek(0)
+    
+    return image_stream
 
 def add_header_footer(canvas, doc):
     canvas.saveState()
@@ -48,14 +68,16 @@ def add_header_footer(canvas, doc):
 
     canvas.restoreState()
 
-def create_pdf(json_data, output_filename="report.pdf"):
+def create_pdf(json_data, output_filename="REPORTREPORT.pdf"):
     doc = BaseDocTemplate(output_filename, pagesize=A4)
     styles = getSampleStyleSheet()
     content = []
 
+    # Define header and footer height
     header_height = 2.5 * inch
     footer_height = 2.5 * inch
 
+    # Adjust the Frame to fit content between header and footer
     frame = Frame(doc.leftMargin, doc.bottomMargin + footer_height,
                   doc.width, doc.height - header_height - footer_height,
                   id='frame')
@@ -70,16 +92,46 @@ def create_pdf(json_data, output_filename="report.pdf"):
     content.append(PageBreak())
 
     # Page 2: Device and Data Overview
-    content.append(Paragraph(f"Device detections over the last {json_data['recording_elapsed']} days", styles['Title']))
+    content.append(Paragraph(f"Data Overview", styles['Title']))
+    content.append(Paragraph(f"Device detections over the last {json_data['recording_elapsed']} days", styles['Normal']))
+    
+    # Add plot of raw data
+    raw_image_stream = plot_raw(json_data['raw_data'])
+    raw_image_path = "raw_data_plot.png"
+    with open(raw_image_path, "wb") as f:
+        f.write(raw_image_stream.getvalue())
+
+    content.append(Paragraph("Overall Number of Detections over the last {json_data['recording_elapsed']} days", styles['Normal']))
+    content.append(Image(raw_image_path, width=6*inch, height=4*inch))
     content.append(Paragraph(f"Number of detections: {json_data['total_peak']}", styles['Normal']))
     content.append(Paragraph(f"Device Initialized: {json_data['date_start']} {json_data['time_start']}", styles['Normal']))
     content.append(Paragraph(f"Device Terminated: {json_data['date_end']} {json_data['time_end']}", styles['Normal']))
+
+    # Add other information
     content.append(Paragraph(f"Calibration Factor: {json_data['calibration_factor']}", styles['Normal']))
     content.append(Paragraph(f"Tube Voltage: {json_data['tube_voltage']}", styles['Normal']))
     content.append(Paragraph(f"Raw Data Length: {len(json_data['raw_data'])}", styles['Normal']))
     content.append(Paragraph(f"Background Data Length: {len(json_data['background_data'])}", styles['Normal']))
     content.append(Paragraph(f"Threshold Data Length: {len(json_data['threshold_data'])}", styles['Normal']))
+
     content.append(PageBreak())
+
+    # Pages for each peak
+    for peak in json_data['peak_data']:
+        peak_index = peak['index']
+        peak_date = peak['date']
+        peak_time = peak['time']
+        x_data_length = len(peak['x-axis'])
+        y_data_length = len(peak['y-axis'])
+
+        content.append(Paragraph(f"Index: {peak_index}", styles['Title']))
+        content.append(Paragraph(f"Date: {peak_date}", styles['Normal']))
+        content.append(Paragraph(f"Time: {peak_time}", styles['Normal']))
+        content.append(Paragraph(f"X-axis Length: {x_data_length}", styles['Normal']))
+        content.append(Paragraph(f"Y-axis Length: {y_data_length}", styles['Normal']))
+        content.append(PageBreak())  # Page break after each peak information
+
+    doc.build(content)
 
     # Pages for each peak
     for peak in json_data['peak_data']:
