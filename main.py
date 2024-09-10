@@ -8,6 +8,7 @@ from matplotlib.figure import Figure
 from ALL_CODE import *
 from exporting import create_pdf
 
+
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
@@ -106,8 +107,8 @@ class UI(QMainWindow):
             datapoint = self.get_peak_data(index, index_date, index_time)
             self.peak_data.append(datapoint)
 
-        #create_pdf(self.document_information)
-        print(self.document_information)
+        create_pdf(self.document_information)
+        #print(self.document_information)
 
     def get_peak_data(self, index, index_date, index_time, before=10, after=15):
         # Ensure index is within bounds
@@ -167,7 +168,7 @@ class UI(QMainWindow):
             'peak_data' :       self.peak_data,
             'raw_data' :        self.raw_data,
             'background_data' : self.background_data,
-            'threshold_data':        self.threshold_data,
+            'threshold_data':        self.threshold_data
 
         }
 
